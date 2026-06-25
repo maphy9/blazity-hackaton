@@ -1,0 +1,78 @@
+# ─────────────────────────────────────────────
+# Secrets & environment  (NEVER commit API keys)
+# ─────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.local
+secrets.json
+*.pem
+*.key
+
+# ─────────────────────────────────────────────
+# Node / JavaScript / TypeScript
+# ─────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+dist/
+build/
+.next/
+out/
+.turbo/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# ─────────────────────────────────────────────
+# Python
+# ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# ─────────────────────────────────────────────
+# Other languages / package managers
+# ─────────────────────────────────────────────
+target/
+vendor/
+*.class
+*.jar
+
+# ─────────────────────────────────────────────
+# Editors & tooling
+# ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─────────────────────────────────────────────
+# OS junk
+# ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─────────────────────────────────────────────
+# Logs & temp
+# ─────────────────────────────────────────────
+*.log
+tmp/
+temp/
+
+# ─────────────────────────────────────────────
+# NOTE: do NOT ignore the Atlas workspace.
+# The .ai/ folder, AGENTS.md and CLAUDE.md are
+# meant to be committed and shared.
+# ─────────────────────────────────────────────
