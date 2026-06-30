@@ -1,6 +1,6 @@
 "use client";
 
-import { History, Loader2 } from "lucide-react";
+import { CloudOff, History, Loader2 } from "lucide-react";
 
 import { getPlatform } from "@/lib/platforms";
 import type { GenerationRecord } from "@/lib/history";
@@ -9,7 +9,8 @@ import { cn } from "@/lib/utils";
 interface HistoryPanelProps {
   records: GenerationRecord[];
   loading: boolean;
-  configured: boolean;
+  /** Non-blocking message when cloud sync failed; local history still works. */
+  cloudError: string | null;
   activeId: string | null;
   onSelect: (record: GenerationRecord) => void;
 }
@@ -29,7 +30,7 @@ function relativeTime(ms: number | null): string {
 export function HistoryPanel({
   records,
   loading,
-  configured,
+  cloudError,
   activeId,
   onSelect,
 }: HistoryPanelProps) {
@@ -41,12 +42,14 @@ export function HistoryPanel({
         {loading && <Loader2 className="text-muted-foreground size-3.5 animate-spin" />}
       </div>
 
-      {!configured ? (
-        <p className="text-muted-foreground text-xs leading-relaxed">
-          Add your Firebase config to <code>.env.local</code> to save and reload
-          past generations.
+      {cloudError && (
+        <p className="flex items-start gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/10 px-2.5 py-2 text-[11px] leading-relaxed text-amber-500/90">
+          <CloudOff className="mt-px size-3.5 shrink-0" />
+          <span>{cloudError}</span>
         </p>
-      ) : records.length === 0 && !loading ? (
+      )}
+
+      {records.length === 0 && !loading ? (
         <p className="text-muted-foreground text-xs leading-relaxed">
           No saved generations yet. Your results will appear here.
         </p>

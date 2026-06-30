@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   isFirebaseConfigured,
-  listGenerations,
+  loadHistory,
   saveGeneration,
   type GenerationRecord,
 } from "@/lib/history";
@@ -25,19 +25,20 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   const [history, setHistory] = useState<GenerationRecord[]>([]);
-  const [historyLoading, setHistoryLoading] = useState(isFirebaseConfigured);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [cloudError, setCloudError] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const canSubmit = brief.trim().length > 0 && selected.length > 0 && !loading;
 
-  // Used by event handlers after a successful save.
+  // Used by event handlers after a successful save. Always runs: localStorage
+  // history works even when Firestore is unconfigured or denied.
   const refreshHistory = useCallback(async () => {
-    if (!isFirebaseConfigured) return;
     setHistoryLoading(true);
     try {
-      setHistory(await listGenerations());
-    } catch {
-      // Non-fatal: history is a convenience, not the core flow.
+      const { records, cloudError: err } = await loadHistory();
+      setHistory(records);
+      setCloudError(err);
     } finally {
       setHistoryLoading(false);
     }
@@ -45,13 +46,13 @@ export default function Home() {
 
   // Initial load — set state only inside async callbacks, never synchronously.
   useEffect(() => {
-    if (!isFirebaseConfigured) return;
     let active = true;
-    listGenerations()
-      .then((records) => {
-        if (active) setHistory(records);
+    loadHistory()
+      .then(({ records, cloudError: err }) => {
+        if (!active) return;
+        setHistory(records);
+        setCloudError(err);
       })
-      .catch(() => {})
       .finally(() => {
         if (active) setHistoryLoading(false);
       });
@@ -101,14 +102,15 @@ export default function Home() {
       const data = (await res.json()) as GenerateResponse;
       setResults(data.results);
 
-      // Persist to Firestore (best-effort) and refresh the history list.
+      // Persist (localStorage always; Firestore best-effort) and refresh the list.
       try {
-        const id = await saveGeneration({
+        const { record, cloudError: err } = await saveGeneration({
           brief: submittedBrief,
           platforms: submittedPlatforms,
           results: data.results,
         });
-        if (id) setActiveId(id);
+        setActiveId(record.id);
+        setCloudError(err);
         await refreshHistory();
       } catch {
         // Saving is best-effort; generation already succeeded.
@@ -182,7 +184,7 @@ export default function Home() {
               <HistoryPanel
                 records={history}
                 loading={historyLoading}
-                configured={isFirebaseConfigured}
+                cloudError={cloudError}
                 activeId={activeId}
                 onSelect={selectHistory}
               />
