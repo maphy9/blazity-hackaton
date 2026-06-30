@@ -12,6 +12,8 @@ export interface GenerateResult {
   content: string;
   /** Hashtags as a separate field (space-separated, each starting with #). */
   hashtags?: string;
+  /** Title or subject line (used for newsletters). */
+  title?: string;
 }
 
 export interface GenerateResponse {
@@ -37,6 +39,8 @@ export interface PostDraft {
   text: string;
   /** Optional hashtags (X, Instagram). */
   hashtags: string;
+  /** Optional title (Newsletter). */
+  title?: string;
   /** Image URLs (required to publish to Instagram). */
   imageUrls: string[];
   status: PostStatus;

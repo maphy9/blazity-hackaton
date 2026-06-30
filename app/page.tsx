@@ -13,6 +13,7 @@ import { LoginScreen } from "@/components/login-screen";
 import { PlatformSelector } from "@/components/platform-selector";
 import { ReviewDashboard } from "@/components/review-dashboard";
 import { TopBar } from "@/components/top-bar";
+import { ImageManager } from "@/components/post-forms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -47,13 +48,18 @@ import type {
 function draftsFromResults(
   results: GenerateResult[],
   postStates: GenerationRecord["postStates"] = {},
+  imageUrls: string[] = [],
 ): PostDraft[] {
   return results.map((r) => {
+    const platformDef = PLATFORMS.find(p => p.id === r.platform);
+    const maxImages = platformDef?.maxImages ?? 0;
+    
     const base = {
       platform: r.platform,
       text: r.content,
       hashtags: r.hashtags ?? "",
-      imageUrls: [],
+      title: r.title ?? "",
+      imageUrls: imageUrls.slice(0, maxImages),
     };
     const st = postStates[r.platform];
     if (st?.status === "published") {
@@ -97,7 +103,8 @@ function Workspace({ user }: { user: User }) {
   const uid = user.uid;
 
   const [brief, setBrief] = useState("");
-  const [selected, setSelected] = useState<string[]>(["x", "linkedin", "instagram"]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>(["x", "linkedin", "instagram", "newsletter"]);
   const [drafts, setDrafts] = useState<PostDraft[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -109,7 +116,13 @@ function Workspace({ user }: { user: User }) {
   const [connectionsOpen, setConnectionsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
 
-  const canSubmit = brief.trim().length > 0 && selected.length > 0 && !loading;
+  const selectedPlatformDefs = PLATFORMS.filter(p => selected.includes(p.id));
+  const minImageLimit = selectedPlatformDefs.length > 0
+    ? Math.min(...selectedPlatformDefs.map(p => p.maxImages))
+    : 20;
+  const overLimit = imageUrls.length > minImageLimit;
+
+  const canSubmit = brief.trim().length > 0 && selected.length > 0 && !loading && !overLimit;
   const connectedCount = PLATFORMS.filter((p) =>
     isConnected(p, credentials[p.id]),
   ).length;
@@ -152,7 +165,8 @@ function Workspace({ user }: { user: User }) {
   function selectHistory(record: GenerationRecord) {
     setBrief(record.brief);
     setSelected(record.platforms);
-    setDrafts(draftsFromResults(record.results, record.postStates));
+    setImageUrls(record.imageUrls || []);
+    setDrafts(draftsFromResults(record.results, record.postStates, record.imageUrls || []));
     setActiveId(record.id);
     setError(null);
     setHistoryOpen(false);
@@ -179,13 +193,14 @@ function Workspace({ user }: { user: User }) {
         throw new Error(data.error || "Generation failed.");
       }
       const data = (await res.json()) as GenerateResponse;
-      setDrafts(draftsFromResults(data.results));
+      setDrafts(draftsFromResults(data.results, {}, imageUrls));
 
       try {
         const id = await saveGeneration(uid, {
           brief: submittedBrief,
           platforms: submittedPlatforms,
           results: data.results,
+          imageUrls,
         });
         if (id) setActiveId(id);
         setHistory(await listGenerations(uid));
@@ -312,6 +327,10 @@ function Workspace({ user }: { user: User }) {
         <Card className="bg-card/60 backdrop-blur">
           <CardContent className="space-y-6 pt-6">
             <BriefForm value={brief} onChange={setBrief} disabled={loading} />
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium">Images</label>
+              <ImageManager urls={imageUrls} maxUrls={minImageLimit} onChange={setImageUrls} disabled={loading} />
+            </div>
             <PlatformSelector
               selected={selected}
               onToggle={togglePlatform}
@@ -333,6 +352,7 @@ function Workspace({ user }: { user: User }) {
                   </>
                 )}
               </Button>
+              {overLimit && <p className="text-destructive text-sm font-semibold">Too many images for selected platforms (max {minImageLimit}).</p>}
               {error && <p className="text-destructive text-sm">{error}</p>}
             </div>
           </CardContent>

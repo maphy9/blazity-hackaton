@@ -89,11 +89,12 @@ Rules:
                 items: {
                   type: "object",
                   additionalProperties: false,
-                  required: ["platform", "content", "hashtags"],
+                  required: ["platform", "content"],
                   properties: {
                     platform: { type: "string", enum: selected.map((p) => p.id) },
                     content: { type: "string" },
                     hashtags: { type: "string" },
+                    title: { type: "string" },
                   },
                 },
               },

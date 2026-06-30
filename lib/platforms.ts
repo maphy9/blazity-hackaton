@@ -25,6 +25,8 @@ export interface Platform {
   credentialFields: CredentialField[];
   /** Whether this platform requires an image to publish. */
   requiresImage?: boolean;
+  /** Max images supported. */
+  maxImages: number;
 }
 
 export const PLATFORMS: Platform[] = [
@@ -42,6 +44,7 @@ export const PLATFORMS: Platform[] = [
       { key: "accessToken", label: "Access Token" },
       { key: "accessTokenSecret", label: "Access Token Secret" },
     ],
+    maxImages: 4,
   },
   {
     id: "linkedin",
@@ -54,6 +57,7 @@ export const PLATFORMS: Platform[] = [
       { key: "accessToken", label: "Access Token" },
       { key: "authorUrn", label: "Author URN", placeholder: "urn:li:person:XXXX", secret: false },
     ],
+    maxImages: 20,
   },
   {
     id: "instagram",
@@ -67,6 +71,19 @@ export const PLATFORMS: Platform[] = [
       { key: "accessToken", label: "Access Token" },
       { key: "igUserId", label: "IG User ID", placeholder: "17841400000000000", secret: false },
     ],
+    maxImages: 10,
+  },
+  {
+    id: "newsletter",
+    label: "Newsletter",
+    icon: "✉",
+    accent: "#f59e0b",
+    guideline:
+      "Detailed and engaging. Use headers, bullet points, and a conversational tone. Focus on delivering value. Provide a catchy subject line in the 'title' field.",
+    credentialFields: [
+      { key: "apiKey", label: "API Key" },
+    ],
+    maxImages: 10,
   },
 ];
 

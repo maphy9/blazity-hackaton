@@ -10,8 +10,15 @@ import type { PlatformCredentials, PostDraft, PublishResult } from "@/lib/types"
 
 /** Final composed text that would be sent to the platform. */
 export function composePostText(draft: PostDraft): string {
-  const tags = draft.hashtags.trim();
-  return tags ? `${draft.text.trim()}\n\n${tags}` : draft.text.trim();
+  const tags = draft.hashtags?.trim() || "";
+  const title = draft.title?.trim() || "";
+  const body = draft.text.trim();
+  
+  let result = body;
+  if (title) result = `Subject: ${title}\n\n${result}`;
+  if (tags) result = `${result}\n\n${tags}`;
+  
+  return result;
 }
 
 function delay(ms: number) {
@@ -65,6 +72,14 @@ const publishers: Record<string, Publisher> = {
     await delay(900);
     // Real implementation: Graph API media container + publish (Business account).
     return { ok: true, message: "Posted to Instagram.", url: fakePermalink("instagram") };
+  },
+
+  async newsletter(draft) {
+    if (!draft.title?.trim()) return { ok: false, message: "Newsletter subject is empty." };
+    if (!draft.text.trim()) return { ok: false, message: "Newsletter body is empty." };
+    await delay(600);
+    // Real implementation: POST to Mailchimp/Resend/SendGrid API.
+    return { ok: true, message: "Sent Newsletter.", url: fakePermalink("newsletter") };
   },
 };
 

@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { composePostText } from "@/lib/publishers";
 import type { PostDraft } from "@/lib/types";
 
-function ImageManager({ urls, maxUrls, onChange, disabled, required }: { urls: string[], maxUrls: number, onChange: (urls: string[]) => void, disabled?: boolean, required?: boolean }) {
+export function ImageManager({ urls, maxUrls, onChange, disabled, required }: { urls: string[], maxUrls: number, onChange: (urls: string[]) => void, disabled?: boolean, required?: boolean }) {
   const [newUrl, setNewUrl] = useState("");
   return (
     <div className="space-y-3">
@@ -170,10 +170,44 @@ export function InstagramForm({ draft, onChange, disabled }: PostFormProps) {
   );
 }
 
+/** Newsletter: subject line + body field + images */
+export function NewsletterForm({ draft, onChange, disabled }: PostFormProps) {
+  const words = draft.text.trim() ? draft.text.trim().split(/\s+/).length : 0;
+  return (
+    <div className="space-y-3">
+      <div className="space-y-1.5">
+        <Label className="text-xs">Subject Line</Label>
+        <Input
+          value={draft.title || ""}
+          onChange={(e) => onChange({ title: e.target.value })}
+          placeholder="Subject..."
+          disabled={disabled}
+        />
+      </div>
+      <div className="space-y-1.5">
+        <Label className="text-xs">Newsletter Body</Label>
+        <Textarea
+          value={draft.text}
+          onChange={(e) => onChange({ text: e.target.value })}
+          rows={12}
+          disabled={disabled}
+          className="bg-background/40 resize-y leading-relaxed"
+        />
+      </div>
+      <div className="space-y-1.5">
+        <Label className="text-xs">Images</Label>
+        <ImageManager urls={draft.imageUrls || []} maxUrls={10} onChange={(urls) => onChange({ imageUrls: urls })} disabled={disabled} />
+      </div>
+      <p className="text-muted-foreground text-right text-xs">{words} words</p>
+    </div>
+  );
+}
+
 const FORMS: Record<string, (props: PostFormProps) => React.ReactElement> = {
   x: XForm,
   linkedin: LinkedInForm,
   instagram: InstagramForm,
+  newsletter: NewsletterForm,
 };
 
 export function PostForm(props: PostFormProps) {

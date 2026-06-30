@@ -31,6 +31,7 @@ export interface GenerationRecord {
   brief: string;
   platforms: string[];
   results: GenerateResult[];
+  imageUrls?: string[];
   /** Per-platform publish/schedule state. */
   postStates: Record<string, PostState>;
   createdAt: number | null; // epoch ms, or null until the server timestamp resolves
@@ -43,13 +44,14 @@ function generationsCol(uid: string) {
 
 export async function saveGeneration(
   uid: string,
-  input: { brief: string; platforms: string[]; results: GenerateResult[] },
+  input: { brief: string; platforms: string[]; results: GenerateResult[]; imageUrls?: string[] },
 ): Promise<string | null> {
   if (!db) return null;
   const ref = await addDoc(generationsCol(uid), {
     brief: input.brief,
     platforms: input.platforms,
     results: input.results,
+    imageUrls: input.imageUrls || [],
     postStates: {},
     createdAt: serverTimestamp(),
   });
@@ -84,6 +86,7 @@ export async function listGenerations(
       brief: typeof data.brief === "string" ? data.brief : "",
       platforms: Array.isArray(data.platforms) ? data.platforms : [],
       results: Array.isArray(data.results) ? (data.results as GenerateResult[]) : [],
+      imageUrls: Array.isArray(data.imageUrls) ? data.imageUrls : [],
       postStates: rawStates && typeof rawStates === "object" ? rawStates : {},
       createdAt: createdAt instanceof Timestamp ? createdAt.toMillis() : null,
     };
