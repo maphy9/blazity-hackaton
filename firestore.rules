@@ -1,0 +1,14 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // "One Idea, Every Format" generation history (no auth flow).
+    // Open read/create for the hackathon demo — NOT production-safe.
+    // Lock these down (e.g. behind auth) before any real launch.
+    match /generations/{doc} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if false;
+    }
+  }
+}

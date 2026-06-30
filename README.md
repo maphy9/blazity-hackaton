@@ -6,6 +6,38 @@
 
 ---
 
+## One Idea, Every Format — MVP
+
+Write a single content brief, pick your platforms (X, LinkedIn, Instagram,
+Newsletter), and the app uses Anthropic Claude to adapt it into a
+platform-tailored post for each — shown side by side in an editable review
+dashboard. **Nothing is published automatically**; you review and edit every
+post before it goes anywhere.
+
+**Stack:** Next.js (App Router) + TypeScript + Tailwind + shadcn/ui + Anthropic
+Claude (`@anthropic-ai/sdk`).
+
+### Run locally
+
+```bash
+npm install
+cp .env.example .env.local   # then add your ANTHROPIC_API_KEY
+npm run dev                  # http://localhost:3000
+```
+
+`ANTHROPIC_API_KEY` is read server-side only (in `app/api/generate/route.ts`)
+and must never be committed — `.env.local` is git-ignored.
+
+### Where things live
+
+- `app/page.tsx` — Review Dashboard UI (compose + side-by-side cards)
+- `app/api/generate/route.ts` — Claude call (structured JSON output)
+- `lib/platforms.ts` — platform definitions + per-platform prompt rules (the
+  one place to add a future image/video channel)
+- `components/` — `brief-form`, `platform-selector`, `review-card`, `review-dashboard`
+
+---
+
 ## The Challenge
 
 People who work with words, images, or video drown in busywork: reformatting, off brand checking, asset hunting, keeping tone consistent. Exactly the work AI is now good at.
