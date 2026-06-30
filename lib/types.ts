@@ -37,8 +37,8 @@ export interface PostDraft {
   text: string;
   /** Optional hashtags (X, Instagram). */
   hashtags: string;
-  /** Image URL (required to publish to Instagram). */
-  imageUrl: string;
+  /** Image URLs (required to publish to Instagram). */
+  imageUrls: string[];
   status: PostStatus;
   /** Human-readable result after a publish attempt. */
   message?: string;

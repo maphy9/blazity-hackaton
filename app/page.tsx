@@ -53,7 +53,7 @@ function draftsFromResults(
       platform: r.platform,
       text: r.content,
       hashtags: r.hashtags ?? "",
-      imageUrl: "",
+      imageUrls: [],
     };
     const st = postStates[r.platform];
     if (st?.status === "published") {

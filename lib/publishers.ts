@@ -59,8 +59,8 @@ const publishers: Record<string, Publisher> = {
 
   async instagram(draft) {
     if (!draft.text.trim()) return { ok: false, message: "Caption is empty." };
-    if (!draft.imageUrl.trim()) {
-      return { ok: false, message: "Instagram requires an image URL." };
+    if (draft.imageUrls.length === 0) {
+      return { ok: false, message: "Instagram requires at least one image URL." };
     }
     await delay(900);
     // Real implementation: Graph API media container + publish (Business account).
