@@ -53,8 +53,11 @@ Platform requirements:
 ${platformRules}
 
 Rules:
-- Write only the publishable post copy for each platform — no labels, preamble, or explanation.
-- Respect every platform's character limit and formatting convention.
+- Write only the publishable post copy in "content" — no labels, preamble, or explanation.
+- Put hashtags ONLY in the "hashtags" field (space-separated, each starting with #).
+  Do NOT include hashtags inside "content".
+- For platforms where hashtags don't fit (e.g. LinkedIn), return an empty string for "hashtags".
+- For X (Twitter), the combined length of "content" plus "hashtags" must stay within 280 characters.
 - Keep the core message and key facts from the brief consistent across all platforms.
 - Return exactly one entry per requested platform, using the exact platform id listed above.`;
 
@@ -86,10 +89,11 @@ Rules:
                 items: {
                   type: "object",
                   additionalProperties: false,
-                  required: ["platform", "content"],
+                  required: ["platform", "content", "hashtags"],
                   properties: {
                     platform: { type: "string", enum: selected.map((p) => p.id) },
                     content: { type: "string" },
+                    hashtags: { type: "string" },
                   },
                 },
               },

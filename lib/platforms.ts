@@ -1,11 +1,17 @@
 // Single source of truth for target platforms.
-// Drives the platform pills, the prompt sent to Claude, and the review cards.
-// To add a future channel (e.g. an image or video generator), add an entry here.
+// Drives platform pills, the generation prompt, per-platform edit forms,
+// the connections (credentials) UI, and the (simulated) publishers.
+
+export interface CredentialField {
+  key: string;
+  label: string;
+  placeholder?: string;
+  /** Rendered as a password input when true (default true — these are secrets). */
+  secret?: boolean;
+}
 
 export interface Platform {
-  /** Stable id used in requests and responses. */
   id: string;
-  /** Human-readable label shown in the UI. */
   label: string;
   /** Short emoji/glyph shown on pills and cards. */
   icon: string;
@@ -13,8 +19,12 @@ export interface Platform {
   accent: string;
   /** Guidance injected into the prompt describing this platform's conventions. */
   guideline: string;
-  /** Optional soft character limit surfaced in the review card. */
+  /** Optional soft character limit surfaced in the editor. */
   charLimit?: number;
+  /** Credential fields the user saves to "connect" this platform. */
+  credentialFields: CredentialField[];
+  /** Whether this platform requires an image to publish. */
+  requiresImage?: boolean;
 }
 
 export const PLATFORMS: Platform[] = [
@@ -26,6 +36,12 @@ export const PLATFORMS: Platform[] = [
     guideline:
       "Max 280 characters. Punchy and conversational. Include 1-2 relevant hashtags.",
     charLimit: 280,
+    credentialFields: [
+      { key: "apiKey", label: "API Key" },
+      { key: "apiKeySecret", label: "API Key Secret" },
+      { key: "accessToken", label: "Access Token" },
+      { key: "accessTokenSecret", label: "Access Token Secret" },
+    ],
   },
   {
     id: "linkedin",
@@ -34,6 +50,10 @@ export const PLATFORMS: Platform[] = [
     accent: "#0a66c2",
     guideline:
       "Professional tone. Use generous spacing with one-sentence paragraphs. Open with a strong hook and end with a question to invite discussion.",
+    credentialFields: [
+      { key: "accessToken", label: "Access Token" },
+      { key: "authorUrn", label: "Author URN", placeholder: "urn:li:person:XXXX", secret: false },
+    ],
   },
   {
     id: "instagram",
@@ -42,13 +62,11 @@ export const PLATFORMS: Platform[] = [
     accent: "#e1306c",
     guideline:
       "Visual, engaging language with tasteful emojis. End with a clear call to action such as \"Link in bio\".",
-  },
-  {
-    id: "newsletter",
-    label: "Newsletter",
-    icon: "✉",
-    accent: "#f59e0b",
-    guideline: "2-3 short paragraphs in a welcoming, conversational tone.",
+    requiresImage: true,
+    credentialFields: [
+      { key: "accessToken", label: "Access Token" },
+      { key: "igUserId", label: "IG User ID", placeholder: "17841400000000000", secret: false },
+    ],
   },
 ];
 

@@ -1,4 +1,4 @@
-// Shared request/response contracts for the "One Idea, Every Format" generate flow.
+// Shared contracts across the generate → edit → publish flow.
 
 export interface GenerateRequest {
   /** The single content brief the user writes once. */
@@ -8,10 +8,10 @@ export interface GenerateRequest {
 }
 
 export interface GenerateResult {
-  /** Platform id this content was adapted for. */
   platform: string;
-  /** The platform-tailored post copy. */
   content: string;
+  /** Hashtags as a separate field (space-separated, each starting with #). */
+  hashtags?: string;
 }
 
 export interface GenerateResponse {
@@ -20,4 +20,39 @@ export interface GenerateResponse {
 
 export interface ErrorResponse {
   error: string;
+}
+
+export type PostStatus =
+  | "draft"
+  | "approved"
+  | "scheduled"
+  | "publishing"
+  | "published"
+  | "failed";
+
+/** An editable, per-platform draft shown in the review dashboard. */
+export interface PostDraft {
+  platform: string;
+  /** Main body: tweet text / post body / caption. */
+  text: string;
+  /** Optional hashtags (X, Instagram). */
+  hashtags: string;
+  /** Image URL (required to publish to Instagram). */
+  imageUrl: string;
+  status: PostStatus;
+  /** Human-readable result after a publish attempt. */
+  message?: string;
+  /** Simulated/real permalink after a successful publish. */
+  url?: string;
+  /** Epoch ms the post is scheduled to publish (when status === "scheduled"). */
+  scheduledAt?: number;
+}
+
+/** Saved per-platform credentials (key/value of credentialFields). */
+export type PlatformCredentials = Record<string, string>;
+
+export interface PublishResult {
+  ok: boolean;
+  message: string;
+  url?: string;
 }

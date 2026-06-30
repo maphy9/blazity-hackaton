@@ -19,7 +19,7 @@ export function PlatformSelector({
   return (
     <div className="space-y-3">
       <p className="text-sm font-medium">Platforms</p>
-      <div className="grid grid-cols-2 gap-2.5">
+      <div className="flex flex-wrap gap-2.5">
         {PLATFORMS.map((platform) => {
           const isSelected = selected.includes(platform.id);
           return (
@@ -35,7 +35,7 @@ export function PlatformSelector({
                   : undefined
               }
               className={cn(
-                "group relative flex items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left transition-all",
+                "group relative flex items-center gap-2.5 rounded-xl border px-3.5 py-2.5 text-left transition-all",
                 "hover:border-foreground/30 disabled:opacity-50",
                 isSelected ? "bg-card" : "bg-card/40 border-border",
               )}
