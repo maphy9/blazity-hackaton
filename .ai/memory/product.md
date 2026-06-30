@@ -1,15 +1,32 @@
 # Product
 
-Early-stage hackathon project. The repository is currently a scaffold with no
-application code yet.
+AI content marketing aggregator — working concept: **"One Idea, Every Format."**
 
-## Direction
+## Problem
 
-The intended product is an AI / agent application. Specific scope — the concrete
-use case, target users, and feature set — is not yet decided.
+People who market across many channels rewrite the same idea over and over to fit
+each platform's tone, length, and format. This is slow, repetitive, error-prone,
+and makes it hard to keep a consistent voice across channels.
 
-## Unknowns (fill once code lands)
+## Solution
 
-- Concrete product purpose and the problem it solves
-- Target users
-- Success criteria / what a hackathon demo must show
+- A user writes a single content brief / idea once.
+- They select the target platforms (e.g. LinkedIn, Instagram, X/Twitter, newsletter).
+- AI adapts the piece to match the tone, length, and format of each selected platform.
+- Optional: users add their own platform API credentials to publish directly.
+
+## Target users
+
+Content marketers, social media managers, and creators who publish the same
+message across multiple platforms.
+
+## Direction / future scope
+
+- AI image generation from the same brief.
+- AI video generation from the same brief.
+
+## Demo success criteria
+
+A judge sees one brief turned into several platform-tailored outputs in seconds,
+ideally with one direct publish — proving the "one idea, every format" loop works
+end to end and that the AI output is checked, not blindly shipped.

@@ -2,10 +2,16 @@
 
 ## What this repo is
 
-`blazity-hackaton` — an early-stage hackathon project. Today it is a scaffold:
-only README, LICENSE, and the Atlas AI workspace under `.ai/` exist; there is no
-application code yet. The intended product is an AI / agent application; concrete
-scope and tech stack are not yet decided. See `.ai/memory/` for stable context.
+`blazity-hackaton` — a Blazity hackathon project building an **AI content
+marketing aggregator**: "One Idea, Every Format." A user writes a single content
+brief once and selects target platforms (e.g. LinkedIn, Instagram, X/Twitter,
+newsletter); the app uses AI to adapt tone, length, and format for each platform,
+with optional direct publishing via user-supplied platform API credentials.
+Future direction includes AI image and video generation from the same brief.
+
+Stack is Next.js + TypeScript with Anthropic Claude as the AI provider. As of the
+last setup the application code is not yet scaffolded. See `.ai/memory/` for
+stable context.
 
 ## Structure
 
@@ -16,10 +22,14 @@ scope and tech stack are not yet decided. See `.ai/memory/` for stable context.
 
 ## Working rules
 
-- No stack is chosen yet — confirm language, framework, and run/test/build
-  commands before assuming them. Update `.ai/memory/stack.md` once decided.
-- There are no project-specific safe commands yet beyond Atlas tooling:
-  `npx --yes @blazity-atlas/core@latest doctor` checks workspace health.
+- Stack is Next.js + TypeScript with Anthropic Claude (`@anthropic-ai/sdk`).
+  Default to the latest Claude models (Opus 4.8 / Sonnet 4.6) for generation.
+  The app is not yet scaffolded — confirm exact run/test/build commands once a
+  `package.json` exists, and keep `.ai/memory/stack.md` current.
+- Never commit secrets. Platform API credentials and the Anthropic API key are
+  user-supplied at runtime via env / app input — keep them out of the repo.
+- Atlas tooling is safe: `npx --yes @blazity-atlas/core@latest doctor` checks
+  workspace health.
 - Do not edit the `<!-- BEGIN/END ATLAS -->` managed block below by hand.
 - Keep durable docs depersonalized (see Atlas Documentation Rules below).
 

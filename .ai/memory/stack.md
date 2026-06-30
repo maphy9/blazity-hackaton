@@ -1,17 +1,18 @@
 # Stack
 
-The technical stack is not yet chosen. No `package.json`, lockfile, or framework
-config exists in the repository.
+## Chosen
 
-## Known
-
-- Git for version control; single initial commit so far.
-- Atlas (`@blazity-atlas/core`) manages the AI workspace; run it via
+- **Language/runtime**: TypeScript on Node.js.
+- **Framework**: Next.js (React).
+- **AI provider**: Anthropic Claude via `@anthropic-ai/sdk`. Default to the latest
+  Claude models (e.g. Opus 4.8 / Sonnet 4.6) for content generation.
+- **Version control**: Git.
+- **AI workspace**: Atlas (`@blazity-atlas/core`); health check via
   `npx --yes @blazity-atlas/core@latest doctor`.
 
-## Unknowns (fill once chosen)
+## Unknowns (fill once scaffolded)
 
-- Language(s) and runtime
-- Framework(s) and key libraries
-- Build, test, and run commands
-- AI/agent provider and SDK
+- Package manager (npm / pnpm / yarn) and exact build/test/run commands.
+- UI/styling libraries (e.g. Tailwind, component kit).
+- Platform publishing SDKs/connectors for LinkedIn, Instagram, X/Twitter, etc.
+- Image/video generation provider(s) for the future scope.
